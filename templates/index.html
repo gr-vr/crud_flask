@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+{% block title %} Главная {% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col md-12">
+                <div class="jumbotron p-3">
+                    <h2>Управление <b>Товарами</b>
+                        <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                                data-target="#mymodal">Добавить новый товар
+                        </button>
+                    </h2>
+
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-success alert-dismissable" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                                        <span aria-hidden="true">x</span>
+                                    </button>
+                                {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <table class="table table-hover table-bordered">
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Изготовитель</th>
+                            <th>Тип</th>
+                            <th>Действия</th>
+                        </tr>
+                        {% for product in products %}
+
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.title }}</td>
+                            <td>{{ product.supplier }}</td>
+                            <td>{{ product.type_item }}</td>
+                            <td>
+                                <a href="/update/{{product.id}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{product.id}}">Изменить</a>
+                                <a href="/delete/{{ product.id }}" class="btn btn-danger btn-xs"
+                                   onclick="return confirm('Вы уверены что хотите удалить товар?')">Удалить</a>
+                            </td>
+                        </tr>
+
+                        <div id="modaledit{{product.id}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Изменение данных товара</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ url_for('update') }}" method="POST">
+                                            <div class="form-group">
+                                                <label>Название:</label>
+                                                <input type="hidden" name="id" value="{{ product.id }}">
+                                                <input type="text" class="form-control" name="title" value="{{ product.title }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Изготовитель:</label>
+                                                <input type="text" class="form-control" name="supplier" value="{{ product.supplier }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Тип:</label>
+                                                <input type="text" class="form-control" name="type_item" value="{{ product.type_item }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <button class="btn btn-primary" type="submit">Изменить</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <!-- Окно добавления товара-->
+                <div id="mymodal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Добавление товара</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('insert') }}" method="POST">
+                                    <div class="form-group">
+                                        <label>Название:</label>
+                                        <input type="text" class="form-control" name="title" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Изготовитель:</label>
+                                        <input type="text" class="form-control" name="supplier" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Тип:</label>
+                                        <input type="text" class="form-control" name="type_item" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Добавить товар</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
